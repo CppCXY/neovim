@@ -18,7 +18,6 @@ indent_size = 8
 [*.lua]
 quote_style = single
 call_arg_parentheses = remove
-keep_one_space_between_table_and_bracket = true
-
-# [line layout]
+continuation_indent_size = 2
+align_table_field_to_first_field = false
 keep_line_after_function_define_statement = minLine:0

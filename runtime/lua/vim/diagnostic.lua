@@ -957,7 +957,7 @@ M.handlers.virtual_text = {
         diagnostics = reformat_diagnostics(opts.virtual_text.format, diagnostics)
       end
       if opts.virtual_text.source
-          and (opts.virtual_text.source ~= 'if_many' or count_sources(bufnr) > 1) then
+        and (opts.virtual_text.source ~= 'if_many' or count_sources(bufnr) > 1) then
         diagnostics = prefix_source(diagnostics)
       end
       if opts.virtual_text.severity then
@@ -1262,8 +1262,8 @@ function M.open_float(opts, ...)
     local line_length = #vim.api.nvim_buf_get_lines(bufnr, lnum, lnum + 1, true)[1]
     diagnostics = vim.tbl_filter(function(d)
       return d.lnum == lnum
-          and math.min(d.col, line_length - 1) <= col
-          and (d.end_col >= col or d.end_lnum > lnum)
+        and math.min(d.col, line_length - 1) <= col
+        and (d.end_col >= col or d.end_lnum > lnum)
     end, diagnostics)
   end
 
@@ -1285,8 +1285,8 @@ function M.open_float(opts, ...)
   local header = if_nil(opts.header, 'Diagnostics:')
   if header then
     vim.validate { header = { header, function(v)
-                                return type(v) == 'string' or type(v) == 'table'
-                              end, "'string' or 'table'" } }
+      return type(v) == 'string' or type(v) == 'table'
+    end, "'string' or 'table'" } }
     if type(header) == 'table' then
       -- Don't insert any lines for an empty string
       if string.len(if_nil(header[1], '')) > 0 then
@@ -1314,8 +1314,8 @@ function M.open_float(opts, ...)
   local prefix, prefix_hl_group
   if prefix_opt then
     vim.validate { prefix = { prefix_opt, function(v)
-                                return type(v) == 'string' or type(v) == 'table' or type(v) == 'function'
-                              end, "'string' or 'table' or 'function'" } }
+      return type(v) == 'string' or type(v) == 'table' or type(v) == 'function'
+    end, "'string' or 'table' or 'function'" } }
     if type(prefix_opt) == 'string' then
       prefix, prefix_hl_group = prefix_opt, 'NormalFloat'
     elseif type(prefix_opt) == 'table' then
