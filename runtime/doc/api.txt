@@ -1546,6 +1546,9 @@ nvim_set_current_win({window})                        *nvim_set_current_win()*
 nvim_set_hl({ns_id}, {name}, {*val})                           *nvim_set_hl()*
                 Set a highlight group.
 
+                Note: unlike the `:highlight` command which can update a highlight group, this function
+                completely replaces the definition. For example: nvim_set_hl(0, 'Visual , {}) will clear the highlight group 'Visual .
+
                 Parameters: ~
                     {ns_id}  number of namespace for this highlight. Use value
                              0 to set a highlight group in the global (
@@ -2813,7 +2816,7 @@ nvim_win_set_buf({window}, {buffer})                      *nvim_win_set_buf()*
 
 nvim_win_set_cursor({window}, {pos})                   *nvim_win_set_cursor()*
                 Sets the (1,0)-indexed cursor position in the window.
-                |api-indexing|
+                |api-indexing| Unlike |win_execute()| this scrolls the window.
 
                 Parameters: ~
                     {window}  Window handle, or 0 for current window
@@ -3106,6 +3109,81 @@ nvim_tabpage_set_var({tabpage}, {name}, {value})
                     {tabpage}  Tabpage handle, or 0 for current tabpage
                     {name}     Variable name
                     {value}    Variable value
+
+
+==============================================================================
+Autocmd Functions                                                *api-autocmd*
+
+nvim_create_augroup({*opts})                           *nvim_create_augroup()*
+                Create or get an augroup.
+
+                To get an existing augroup ID, do: >
+                    local id = vim.api.nvim_create_augroup({ name = name, clear = false });
+<
+
+                Parameters: ~
+                    {opts}  Parameters
+                            • name (string): The name of the augroup
+                            • clear (bool): Whether to clear existing commands
+                              or not.
+
+nvim_create_autocmd({*opts})                           *nvim_create_autocmd()*
+                Define an autocmd. pattern = comma delimited list of patterns | pattern | {
+                pattern, ... }
+
+                Parameters: ~
+                    {opts}       Dictionary Required keys: event: string |
+                            ArrayOf(string) event = "pat1,pat2,pat3", event =
+                            "pat1" event = {"pat1"} event = {"pat1", "pat2",
+                            "pat3"}
+                    {{string}}   command - optional, vimscript command Eg.
+                                 command = "let g:value_set = v:true"
+                    {{string}    | function} callback - function or string to
+                                 execute on autocmd
+                    {{boolean}}  once - optional, defaults to false
+
+                pattern = "*.py,*.pyi" pattern = "*.py" pattern = {"*.py"}
+                pattern = { "*.py", "*.pyi" }
+
+                not supported pattern = {"*.py,*.pyi"}
+
+                event = string | string[] event = "FileType,CursorHold" event
+                = "BufPreWrite" event = {"BufPostWrite"} event =
+                {"CursorHold", "BufPreWrite", "BufPostWrite"}
+
+nvim_del_augroup_by_id({id})                        *nvim_del_augroup_by_id()*
+                NOTE: behavior differs from augroup-delete. When deleting an
+                augroup, autocmds contained by this augroup will also be
+                deleted and cleared. This augroup will no longer exist
+
+nvim_del_augroup_by_name({name})                  *nvim_del_augroup_by_name()*
+                NOTE: behavior differs from augroup-delete. When deleting an
+                augroup, autocmds contained by this augroup will also be
+                deleted and cleared. This augroup will no longer exist
+
+nvim_del_autocmd({id})                                    *nvim_del_autocmd()*
+                Delete an autocmd by ID. Autocmds only return IDs when created
+                via the API.
+
+                Parameters: ~
+                    {id}  Integer The ID returned by nvim_create_autocmd
+
+nvim_do_autocmd({*opts})                                   *nvim_do_autocmd()*
+                Parameters: ~
+                    {{string}}  group - autocmd group name
+                    {{number}}  buffer - buffer number
+                    {{string}   | table} pattern - optional, defaults to "*".
+                                vim.api.nvim_do_autcmd({ group, buffer,
+                                pattern, event, modeline })
+
+nvim_get_autocmds({*opts})                               *nvim_get_autocmds()*
+                Get autocmds that match the requirements passed to {opts}.
+                group event pattern
+
+                Parameters: ~
+                    {{string}}  event - event or events to match against
+                                vim.api.nvim_get_autocmds({ event = "FileType"
+                                })
 
 
 ==============================================================================
